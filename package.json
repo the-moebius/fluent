@@ -40,10 +40,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "peerDependencies": {
-    "@fluent/bundle": "^0.17.0"
-  },
   "dependencies": {
+    "@fluent/bundle": "^0.17.0"
   },
   "devDependencies": {
     "@types/node": "^12.20.37",
