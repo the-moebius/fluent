@@ -4,7 +4,8 @@
   "description": "Better Fluent integration for JavaScript",
   "scripts": {
     "build": "rm -rf ./dist && tsc -p ./tsconfig.lib.json",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": ":"
   },
   "main": "dist/index.js",
   "types": "dist/types",
