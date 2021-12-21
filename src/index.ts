@@ -3,6 +3,8 @@ export {
   Fluent,
   LocaleId,
   FluentBundleOptions,
+  GetTranslatorOptions,
+  AddTranslationOptions,
 
 } from './fluent';
 

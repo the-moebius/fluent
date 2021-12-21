@@ -11,6 +11,17 @@ export type FluentBundleOptions = (
   ConstructorParameters<typeof FluentBundle>[1]
 );
 
+export interface AddTranslationOptions {
+  locales: (LocaleId | LocaleId[]);
+  source?: (string | string[]);
+  filePath?: (string | string[]);
+  bundleOptions?: FluentBundleOptions;
+}
+
+export interface GetTranslatorOptions {
+  locales: (LocaleId | LocaleId[]);
+}
+
 
 export class Fluent {
 
@@ -23,13 +34,7 @@ export class Fluent {
   );
 
 
-  public async addTranslation(options: {
-    locales: (LocaleId | LocaleId[]);
-    source?: (string | string[]);
-    filePath?: (string | string[]);
-    bundleOptions?: FluentBundleOptions;
-
-  }): Promise<void> {
+  public async addTranslation(options: AddTranslationOptions): Promise<void> {
 
     const locales = (Array.isArray(options.locales)
       ? options.locales
@@ -54,10 +59,10 @@ export class Fluent {
 
   }
 
-  public getTranslator(options: {
-    locales: (LocaleId | LocaleId[]);
+  public getTranslator(
+    options: GetTranslatorOptions
 
-  }): Translator {
+  ): Translator {
 
     const locales = (Array.isArray(options.locales)
       ? options.locales
