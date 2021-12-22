@@ -18,7 +18,7 @@ export class Translator {
 
   public translate(
     messageId: string,
-    context: TranslationContext
+    context?: TranslationContext
 
   ): string {
 

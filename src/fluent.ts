@@ -98,7 +98,7 @@ export class Fluent {
   public translate(
     locales: (LocaleId | LocaleId[]),
     messageId: string,
-    context: TranslationContext
+    context?: TranslationContext
 
   ): string {
 
