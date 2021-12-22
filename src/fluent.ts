@@ -1,5 +1,6 @@
 
 import { FluentBundle, FluentResource } from '@fluent/bundle';
+import { negotiateLanguages } from '@fluent/langneg';
 
 import { readFile } from './read-file';
 import { TranslationContext, Translator } from './translator';
@@ -16,6 +17,7 @@ export interface AddTranslationOptions {
   source?: (string | string[]);
   filePath?: (string | string[]);
   bundleOptions?: FluentBundleOptions;
+  isDefault?: boolean;
 }
 
 export interface GetTranslatorOptions {
@@ -33,8 +35,13 @@ export class Fluent {
     new Map<string, Translator>()
   );
 
+  private defaultBundle: FluentBundle;
 
-  public async addTranslation(options: AddTranslationOptions): Promise<void> {
+
+  public async addTranslation(
+    options: AddTranslationOptions
+
+  ): Promise<void> {
 
     const locales = (Array.isArray(options.locales)
       ? options.locales
@@ -56,6 +63,11 @@ export class Fluent {
 
     // Invalidating translators cache
     this.translators.clear();
+
+    // Saving reference to the default bundle
+    if (!this.defaultBundle || options.isDefault) {
+      this.defaultBundle = bundle;
+    }
 
   }
 
@@ -80,7 +92,7 @@ export class Fluent {
     if (!bundle) {
       throw new Error(
         `Failed to find suitable translation for locales: ` +
-        locales.join(', ') + `.` +
+        locales.join(', ') + `. ` +
         `Make sure to add translations for all required locales ` +
         `before actually using the translator`
       );
@@ -194,21 +206,43 @@ export class Fluent {
 
   }
 
+  /**
+   * Finds the most suitable bundle
+   * for the specified locales.
+   */
   private findBundle(
-    locales: (LocaleId | LocaleId[])
+    locales: LocaleId[]
 
   ): FluentBundle | undefined {
 
-    // @todo: implement smarter locales negotiation
-    //        https://github.com/projectfluent/fluent.js/tree/master/fluent-langneg
+    // Building a list of all the registered locales
+    const availableLocales = Array.from(this.bundles)
+      .reduce(($locales, bundle) => [
+          ...$locales,
+          ...bundle.locales
+        ], []
+      )
+    ;
 
-    for (const locale of locales) {
-      for (const bundle of this.bundles) {
-        if (bundle.locales.includes(locale)) {
-          return bundle;
-        }
+    // Finding the best match
+    const [locale] = negotiateLanguages(
+      locales,
+      availableLocales, {
+        defaultLocale: 'not-found',
+        strategy: 'lookup',
       }
+    );
+
+    // Using default translation if negotiation fails
+    if (locale === 'not-found') {
+      return this.defaultBundle;
     }
+
+    // Returning the first bundle that
+    // supports the negotiated locale
+    return Array.from(this.bundles)
+      .find(bundle => bundle.locales.includes(locale))
+    ;
 
   }
 

@@ -1,8 +1,6 @@
 
 # @moebius/fluent
 
----
-
 <!-- NPM Badge -->
 <a href="https://badge.fury.io/js/@moebius%2Ffluent">
   <img src="https://badge.fury.io/js/@moebius%2Ffluent.svg" alt="npm version" height="18">
@@ -19,12 +17,33 @@ Better [Fluent][fluent-js] integration for JavaScript.
 ## Features
 
 - Simplifies usage of [Fluent][fluent-js],
-- Allows you to specify translations as text or load them from the filesystem,
-- **All LTS Node.js versions are supported** (starting from Node 12),
-- **Written completely in TypeScript** from scratch in a very strict manner with 100% type coverage (and no *any*'s), ensuring that the library code is correct (type safe) by itself and also **provides high quality typing declarations** to make sure that your code is also correct and type safe,
-- **Enables amazing type completion** for your IDE (even if you are not using TypeScript) thanks to the provided typing declarations,
-- **Minimal possible dependencies** (all are high quality ones) updated to the latest versions,
-- **Source maps** for the library is generated and provided to you for easier debugging.
+
+- Allows you to specify translations as text or load them
+  from the filesystem,
+
+- Supports automatic language negotiation based on the
+  registered languages and the languages supported by the
+  client,
+
+- **All LTS Node.js versions are supported**
+  (starting from Node 12),
+
+- **Written completely in TypeScript** from scratch
+  in a very strict manner with 100% type coverage
+  (and no *any*'s), ensuring that the library code
+  is correct (type safe) by itself and also
+  **provides high quality typing declarations** to make
+  sure that your code is also correct and type safe,
+
+- **Enables amazing type completion** for your IDE
+  (even if you are not using TypeScript) thanks to the
+  provided typing declarations,
+
+- **Minimal possible dependencies**
+  (all are high quality ones) updated to the latest versions,
+
+- **Source maps** for the library is generated
+  and provided to you for easier debugging.
 
 
 ## Install

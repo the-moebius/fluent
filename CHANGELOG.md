@@ -1,4 +1,9 @@
 
+# v0.1.0 (minor release)
+
+- implemented proper language negotiation
+
+
 # v0.0.3 (patch release)
 
 - translation context made optional

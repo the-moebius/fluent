@@ -16,8 +16,12 @@
     "i18n",
     "internationalization",
     "l10n",
+    "language-matching",
+    "language-negotiation",
     "languages",
     "lcoales",
+    "locale-matching",
+    "locale-negotiation",
     "localization",
     "mozilla",
     "translation"
@@ -42,7 +46,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@fluent/bundle": "^0.17.0"
+    "@fluent/bundle": "^0.17.0",
+    "@fluent/langneg": "^0.6.1"
   },
   "devDependencies": {
     "@types/node": "^12.20.37",
