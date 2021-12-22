@@ -1,15 +1,15 @@
 
-# 0.0.3 (patch update)
+# v0.0.3 (patch release)
 
 - translation context made optional
 
 
-# 0.0.2 (patch update)
+# v0.0.2 (patch release)
 
 - exported method options interface types to simplify library usage:
   `AddTranslationOptions` and `GetTranslatorOptions`
 
 
-# 0.0.1
+# v0.0.1 (initial release)
 
 Initial release.
