@@ -1,4 +1,11 @@
 
+# v0.2.0 (minor release)
+
+- introduced
+  [attributes](https://projectfluent.org/fluent/guide/attributes.html)
+  support
+
+
 # v0.1.0 (minor release)
 
 - implemented proper language negotiation

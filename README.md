@@ -25,6 +25,10 @@ Better [Fluent][fluent-js] integration for JavaScript.
   registered languages and the languages supported by the
   client,
 
+- Supports
+  [attributes](https://projectfluent.org/fluent/guide/attributes.html)
+  out of the box,
+
 - **All LTS Node.js versions are supported**
   (starting from Node 12),
 
