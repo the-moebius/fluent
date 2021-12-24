@@ -1,4 +1,13 @@
 
+# v0.3.0 (minor release)
+
+- implemented fallback to the default translation
+  if message/attribute is not found in the selected one
+
+- `Fluent.getTranslator()` method is now returning
+  the default translator if locale is not specified
+
+
 # v0.2.0 (minor release)
 
 - introduced

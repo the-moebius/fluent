@@ -1,7 +1,9 @@
 
 import { FluentBundle, FluentResource } from '@fluent/bundle';
+import { Pattern } from '@fluent/bundle/esm/ast';
 import { negotiateLanguages } from '@fluent/langneg';
 
+import { GetPatternOptions, PatternStore } from './pattern-store';
 import { readFile } from './read-file';
 import { TranslationContext, Translator } from './translator';
 
@@ -21,11 +23,11 @@ export interface AddTranslationOptions {
 }
 
 export interface GetTranslatorOptions {
-  locales: (LocaleId | LocaleId[]);
+  locales?: (LocaleId | LocaleId[]);
 }
 
 
-export class Fluent {
+export class Fluent implements PatternStore {
 
   private readonly bundles = (
     new Set<FluentBundle>()
@@ -37,6 +39,48 @@ export class Fluent {
 
   private defaultBundle: FluentBundle;
 
+
+  public getPattern(
+    options: GetPatternOptions
+
+  ): Pattern | undefined {
+
+    const {
+      callee,
+      messageId,
+      attributeName,
+
+    } = options;
+
+    const path = [messageId, attributeName]
+      .filter(Boolean)
+      .join('.')
+    ;
+
+    const defaultTranslator = this.getTranslator();
+
+    if (defaultTranslator === callee) {
+      // This is already failed, no need to try again
+      return undefined;
+    }
+
+    console.warn(
+      `Getting pattern (${path}) ` +
+      `from the default translator`
+    );
+
+    return defaultTranslator
+      .getPattern({
+        messageId,
+        attributeName,
+
+        // Skipping parent call in order
+        // to prevent endless looping
+        skipParent: true,
+      })
+    ;
+
+  }
 
   public async addTranslation(
     options: AddTranslationOptions
@@ -72,14 +116,35 @@ export class Fluent {
   }
 
   public getTranslator(
-    options: GetTranslatorOptions
+    options?: GetTranslatorOptions
 
   ): Translator {
 
-    const locales = (Array.isArray(options.locales)
-      ? options.locales
-      : [options.locales]
-    );
+    options = (options || {});
+
+    let locales: LocaleId[];
+    let bundle: FluentBundle;
+
+    if (options.locales) {
+      locales = (Array.isArray(options.locales)
+        ? options.locales
+        : [options.locales]
+      );
+
+    } else {
+      if (this.defaultBundle) {
+        bundle = this.defaultBundle;
+        locales = this.defaultBundle.locales;
+
+      } else {
+        throw new Error(
+          `Failed to find suitable translator, ` +
+          `make sure to add at least one translation first`
+        );
+
+      }
+
+    }
 
     const cacheId = locales.join(',');
 
@@ -87,7 +152,9 @@ export class Fluent {
       return this.translators.get(cacheId);
     }
 
-    const bundle = this.findBundle(locales);
+    if (!bundle) {
+      bundle = this.findBundle(locales);
+    }
 
     if (!bundle) {
       throw new Error(
@@ -99,6 +166,8 @@ export class Fluent {
     }
 
     const translator = new Translator(bundle);
+
+    translator.setParentStore(this);
 
     // Saving translator to the RAM-cache
     this.translators.set(cacheId, translator);

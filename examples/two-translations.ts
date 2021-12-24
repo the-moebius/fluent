@@ -59,7 +59,7 @@ welcome =
   };
 
   console.log(
-    fluent.translate('en', 'welcome', context) + `\n\n`
+    fluent.translate('en', 'welcome', context) + `\n`
   );
 
   console.log(
