@@ -11,9 +11,13 @@ void (async () => {
     source: (`welcome = Welcome!`),
   });
 
-  // Creating a shorthand alias
-  const t = fluent.withLocale('en');
+  // Use `withLocale()` method to create
+  // translation function bound
+  // to the specified locale:
+  const translate = fluent.withLocale('en');
 
-  console.log(t('welcome'));
+  console.log(
+    translate('welcome')
+  );
 
 })();

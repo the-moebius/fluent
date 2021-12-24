@@ -1,9 +1,9 @@
 
-import { FluentBundle, FluentResource } from '@fluent/bundle';
+import { FluentBundle, FluentResource, FluentVariable } from '@fluent/bundle';
+import { Pattern } from '@fluent/bundle/esm/ast';
 import { negotiateLanguages } from '@fluent/langneg';
 
 import { readFile } from './read-file';
-import { TranslationContext, Translator } from './translator';
 
 
 export type LocaleId = string;
@@ -24,15 +24,15 @@ export interface GetTranslatorOptions {
   locales: (LocaleId | LocaleId[]);
 }
 
+export type TranslationContext = (
+  Record<string, FluentVariable>
+);
+
 
 export class Fluent {
 
   private readonly bundles = (
     new Set<FluentBundle>()
-  );
-
-  private readonly translators = (
-    new Map<string, Translator>()
   );
 
   private defaultBundle: FluentBundle;
@@ -61,9 +61,6 @@ export class Fluent {
 
     this.bundles.add(bundle);
 
-    // Invalidating translators cache
-    this.translators.clear();
-
     // Saving reference to the default bundle
     if (!this.defaultBundle || options.isDefault) {
       this.defaultBundle = bundle;
@@ -71,54 +68,79 @@ export class Fluent {
 
   }
 
-  public getTranslator(
-    options: GetTranslatorOptions
-
-  ): Translator {
-
-    const locales = (Array.isArray(options.locales)
-      ? options.locales
-      : [options.locales]
-    );
-
-    const cacheId = locales.join(',');
-
-    if (this.translators.has(cacheId)) {
-      return this.translators.get(cacheId);
-    }
-
-    const bundle = this.findBundle(locales);
-
-    if (!bundle) {
-      throw new Error(
-        `Failed to find suitable translation for locales: ` +
-        locales.join(', ') + `. ` +
-        `Make sure to add translations for all required locales ` +
-        `before actually using the translator`
-      );
-    }
-
-    const translator = new Translator(bundle);
-
-    // Saving translator to the RAM-cache
-    this.translators.set(cacheId, translator);
-
-    return translator;
-
-  }
-
   public translate(
-    locales: (LocaleId | LocaleId[]),
-    messageId: string,
+    localeOrLocales: (LocaleId | LocaleId[]),
+    path: string,
     context?: TranslationContext
 
   ): string {
 
-    const translator = this.getTranslator({
-      locales,
-    });
+    const locales = (Array.isArray(localeOrLocales)
+      ? localeOrLocales
+      : [localeOrLocales]
+    );
 
-    return translator.translate(messageId, context);
+    const bundles = this.matchBundles(locales);
+
+    for (const bundle of bundles) {
+
+      const [messageId, attributeName] = path.split('.', 2);
+
+      const message = bundle.getMessage(messageId);
+      if (!message) {
+        console.warn(
+          `Translation message (${messageId}) is not found ` +
+          `for locale(s): ${bundle.locales.join(', ')}`
+        );
+        continue;
+      }
+
+      let pattern: Pattern;
+
+      if (attributeName) {
+        pattern = message.attributes?.[attributeName];
+        if (!pattern) {
+          console.warn(
+            `Missing attribute (${attributeName}) from ` +
+            `message (${messageId}) for locale(s): ` +
+            bundle.locales.join(', ')
+          );
+          continue;
+        }
+
+      } else {
+        pattern = message.value;
+
+      }
+
+      return bundle.formatPattern(pattern, context);
+
+    }
+
+    console.warn(
+      `Translation (${path}) was not found ` +
+      `for requested locale(s): ${locales.join(', ')}`
+    );
+
+    // Returning translation placeholder in case when
+    // message is not found
+    return `{${path}}`;
+
+  }
+
+  /**
+   * Returns translation function bound
+   * to the specified locale(s).
+   */
+  public withLocale(
+    localeOrLocales: (LocaleId | LocaleId[])
+  ): (
+    path: string,
+    context?: TranslationContext
+
+  ) => string {
+
+    return this.translate.bind(this, localeOrLocales);
 
   }
 
@@ -136,11 +158,11 @@ export class Fluent {
       );
     }
 
-    if (options.source) {
+    if (options.source || options.source === '') {
       return (
         Array.isArray(options.source)
-          ? options.source
-          : [options.source]
+          ? options.source.map($source => String($source))
+          : [String(options.source)]
       );
 
     } else if (options.filePath) {
@@ -207,42 +229,45 @@ export class Fluent {
   }
 
   /**
-   * Finds the most suitable bundle
+   * Finds the most suitable bundles
    * for the specified locales.
    */
-  private findBundle(
+  private matchBundles(
     locales: LocaleId[]
 
-  ): FluentBundle | undefined {
+  ): Set<FluentBundle> {
 
     // Building a list of all the registered locales
-    const availableLocales = Array.from(this.bundles)
-      .reduce(($locales, bundle) => [
-          ...$locales,
-          ...bundle.locales
-        ], []
-      )
-    ;
-
-    // Finding the best match
-    const [locale] = negotiateLanguages(
-      locales,
-      availableLocales, {
-        defaultLocale: 'not-found',
-        strategy: 'lookup',
-      }
+    const availableLocales = new Set(
+      Array.from(this.bundles)
+        .reduce(($locales, bundle) => [
+            ...$locales,
+            ...bundle.locales
+          ], []
+        )
     );
 
-    // Using default translation if negotiation fails
-    if (locale === 'not-found') {
-      return this.defaultBundle;
+    // Finding the best match
+    const matchedLocales = negotiateLanguages(
+      locales,
+      Array.from(availableLocales)
+    );
+
+    // For each matched locale, finding the first bundle
+    // that includes it
+    const matchedBundles = matchedLocales
+      .map(locale => (Array.from(this.bundles)
+        .find(bundle => bundle.locales.includes(locale))
+      )
+    );
+
+    // Always adding the default bundle
+    // to the end of the list
+    if (this.defaultBundle) {
+      matchedBundles.push(this.defaultBundle);
     }
 
-    // Returning the first bundle that
-    // supports the negotiated locale
-    return Array.from(this.bundles)
-      .find(bundle => bundle.locales.includes(locale))
-    ;
+    return new Set(matchedBundles);
 
   }
 

@@ -21,9 +21,10 @@ Better [Fluent][fluent-js] integration for JavaScript.
 - Allows you to specify translations as text or load them
   from the filesystem,
 
-- Supports automatic language negotiation based on the
-  registered languages and the languages supported by the
-  client,
+- Supports automatic
+  [language negotiation and fallback](#language-negotiation-and-fallback)
+  based on the registered locales and the locales supported
+  by the client,
 
 - Supports
   [attributes](https://projectfluent.org/fluent/guide/attributes.html)
@@ -123,23 +124,28 @@ console.log(output);
 ```
 
 
-### Use the translator instance
+### Bind the locale
 
-The translator instance will bind the specified locale(s) for you.
+You can use a helper-method to bind the specified locale
+for you:
 
 ```typescript
-// Obtain the translator for required locale(s)
-const translator = fluent.getTranslator({
-  locales: 'ru',
-});
 
-output = translator.translate('welcome', {
+// Use `withLocale()` method to create
+// translation function bound
+// to the specified locale:
+const translate = fluent.withLocale('ru');
+
+// You can also use a shorthand syntax:
+const t = fluent.withLocale('ru');
+
+output = translate('welcome', {
   name: 'Slava',
   value: 100.12345,
   applesCount: 5,
 });
 
-console.log(output);
+output = t('hello');
 ```
 
 
@@ -182,23 +188,32 @@ await fluent.addTranslation({
 });
 ```
 
+## Language negotiation and fallback
 
-## Using a shorthand syntax
+This library implements smart language negotiation and
+a fallback logic. It works the following way:
 
-You could create an alias to make translation calls simpler:
+1. You add translations and specify supported locale(s)
+   for each translation.
 
-```typescript
-  // Creating a shorthand alias
-const t = fluent.translate.bind(fluent, 'en');
+2. When calling `translate()` you specify locale(s)
+   supported by your user.
 
-console.log(
-  t('welcome', {
-    name: 'Slava',
-    value: 100.12345,
-    applesCount: 5,
-  })
-);
-```
+3. The library will automatically match requested locale(s)
+   with the registered translations and will build a
+   prioritized list of translations that could be used.
+
+4. The library will then try to find requested message in
+   the best possible translation and if it's not available
+   it will try another translation in set.
+
+5. If all matched translations doesn't have the specified
+   message, then the generic placeholder will be returned
+   instead (e.g. `{message-id}`). The library will also
+   generate warning messages in the console to let you
+   know when any specific translation doesn't have the
+   specified message (so you can fix it).
+
 
 ## Examples
 

@@ -1,4 +1,17 @@
 
+# v0.3.0 (major release)
+
+## Breaking changes
+
+- `Fluent.getTranslator()` method is no longer available as
+  well as `Translator` class
+
+## New features
+
+- implemented translations fallback
+- added `withLocale()` helper method
+
+
 # v0.2.0 (minor release)
 
 - introduced

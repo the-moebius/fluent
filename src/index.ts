@@ -5,11 +5,6 @@ export {
   FluentBundleOptions,
   GetTranslatorOptions,
   AddTranslationOptions,
-
-} from './fluent';
-
-export {
-  Translator,
   TranslationContext,
 
-} from './translator';
+} from './fluent';
