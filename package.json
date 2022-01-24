@@ -1,6 +1,6 @@
 {
   "name": "@moebius/fluent",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Better Fluent integration for JavaScript",
   "scripts": {
     "build": "rm -rf ./dist && tsc -p ./tsconfig.lib.json",
