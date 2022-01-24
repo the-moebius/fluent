@@ -1,10 +1,9 @@
+export { Fluent } from "./fluent.ts";
 
-export {
-  Fluent,
+export type {
   LocaleId,
   FluentBundleOptions,
   GetTranslatorOptions,
   AddTranslationOptions,
   TranslationContext,
-
-} from './fluent';
+} from "./fluent.ts";
