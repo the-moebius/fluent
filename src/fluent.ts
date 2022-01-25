@@ -35,7 +35,7 @@ export class Fluent {
     new Set<FluentBundle>()
   );
 
-  private defaultBundle: FluentBundle;
+  private defaultBundle?: FluentBundle;
 
 
   public async addTranslation(
@@ -109,7 +109,7 @@ export class Fluent {
         }
 
       } else {
-        pattern = message.value;
+        pattern = (message.value || '');
 
       }
 
@@ -146,8 +146,8 @@ export class Fluent {
 
 
   private async handleSources(options: {
-    source: (string | string[]);
-    filePath: (string | string[]);
+    source?: (string | string[]);
+    filePath?: (string | string[]);
 
   }): Promise<string[]> {
 
@@ -240,7 +240,7 @@ export class Fluent {
     // Building a list of all the registered locales
     const availableLocales = new Set(
       Array.from(this.bundles)
-        .reduce(($locales, bundle) => [
+        .reduce<string[]>(($locales, bundle) => [
             ...$locales,
             ...bundle.locales
           ], []
@@ -255,10 +255,14 @@ export class Fluent {
 
     // For each matched locale, finding the first bundle
     // that includes it
-    const matchedBundles = matchedLocales
-      .map(locale => (Array.from(this.bundles)
-        .find(bundle => bundle.locales.includes(locale))
-      )
+    const matchedBundles = <FluentBundle[]> (
+      matchedLocales
+        .map(
+          locale => (Array.from(this.bundles)
+            .find(bundle => bundle.locales.includes(locale))
+          )
+        )
+        .filter(Boolean)
     );
 
     // Always adding the default bundle
