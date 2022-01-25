@@ -1,4 +1,12 @@
 
+# v1.0.0 (patch release)
+
+**Stabilized package version.**
+
+This is a maintenance release that shouldn't introduce any
+significant changes.
+
+
 # v0.3.0 (major release)
 
 ## Breaking changes
