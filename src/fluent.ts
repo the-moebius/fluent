@@ -4,7 +4,13 @@ import { Pattern } from '@fluent/bundle/esm/ast';
 import { negotiateLanguages } from '@fluent/langneg';
 
 import { readFile } from './read-file';
+import { LoggingWarningHandler } from './warnings/logging-warning-handler';
+import { WarningHandler } from './warnings/warnings';
 
+
+export interface FluentOptions {
+  warningHandler?: WarningHandler;
+}
 
 export type LocaleId = string;
 
@@ -36,6 +42,18 @@ export class Fluent {
   );
 
   private defaultBundle?: FluentBundle;
+
+  private readonly warningHandler: WarningHandler;
+
+
+  constructor(private readonly options: FluentOptions = {}) {
+
+    this.warningHandler = (
+      options.warningHandler ||
+      new LoggingWarningHandler()
+    );
+
+  }
 
 
   public async addTranslation(
@@ -88,10 +106,15 @@ export class Fluent {
 
       const message = bundle.getMessage(messageId);
       if (!message) {
-        console.warn(
-          `Translation message (${messageId}) is not found ` +
-          `for locale(s): ${bundle.locales.join(', ')}`
-        );
+        this.warningHandler.handleWarning({
+          type: 'translate.bundle.missing-message',
+          locales,
+          path,
+          matchedBundles: bundles,
+          context,
+          messageId,
+          bundle,
+        });
         continue;
       }
 
@@ -100,11 +123,16 @@ export class Fluent {
       if (attributeName) {
         pattern = message.attributes?.[attributeName];
         if (!pattern) {
-          console.warn(
-            `Missing attribute (${attributeName}) from ` +
-            `message (${messageId}) for locale(s): ` +
-            bundle.locales.join(', ')
-          );
+          this.warningHandler.handleWarning({
+            type: 'translate.message.missing-attribute',
+            locales,
+            path,
+            matchedBundles: bundles,
+            context,
+            messageId,
+            attributeName,
+            bundle,
+          });
           continue;
         }
 
@@ -117,10 +145,13 @@ export class Fluent {
 
     }
 
-    console.warn(
-      `Translation (${path}) was not found ` +
-      `for requested locale(s): ${locales.join(', ')}`
-    );
+    this.warningHandler.handleWarning({
+      type: 'translate.missing-translation',
+      locales,
+      path,
+      matchedBundles: bundles,
+      context,
+    });
 
     // Returning translation placeholder in case when
     // message is not found
