@@ -48,7 +48,10 @@ Better [Fluent][fluent-js] integration for JavaScript.
   (all are high quality ones) updated to the latest versions,
 
 - **Source maps** for the library is generated
-  and provided to you for easier debugging.
+  and provided to you for easier debugging,
+
+- warning handling and logging are fully customizable
+  to suit your individual needs.
 
 
 ## Install
@@ -212,7 +215,54 @@ a fallback logic. It works the following way:
    instead (e.g. `{message-id}`). The library will also
    generate warning messages in the console to let you
    know when any specific translation doesn't have the
-   specified message (so you can fix it).
+   specified message (so you can fix it). Warning handling
+   and logging [could be easily customized](#warning-handling).
+
+
+## Warning handling
+
+By default, Fluent will log all the warnings using `console.warn`.
+However, this could easily be customized.
+
+
+### Using custom logging function
+
+```typescript
+import { Fluent, LoggingWarningHandler } from '@moebius/fluent';
+
+// Instructing Fluent to use custom logging function
+const fluent = new Fluent({
+  warningHandler: new LoggingWarningHandler({
+    logFunction: (...args) => {
+      // @todo: implement your custom logging function
+    },
+  })
+});
+```
+
+See the [custom-logger](./examples/custom-logger.ts) example.
+
+
+### Using custom warning handler
+
+```typescript
+import { Fluent, WarningHandler, Warning } from '@moebius/fluent';
+
+class MyWarningHandler implements WarningHandler {
+
+  public handleWarning(warning: Warning): void {
+    // @todo: implement your custom warning handling,
+    //        the `warning` object contains useful exception details
+  }
+
+}
+
+const fluent = new Fluent({
+  warningHandler: new MyWarningHandler(),
+});
+```
+
+See the [warning-handler](./examples/warning-handler.ts) example.
 
 
 ## Examples

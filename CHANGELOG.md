@@ -1,4 +1,9 @@
 
+# v1.1.0 (minor release)
+
+Introduced [custom logging & warning handling](./README.md#warning-handling).
+
+
 # v1.0.0 (patch release)
 
 **Stabilized package version.**
