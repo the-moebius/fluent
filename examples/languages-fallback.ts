@@ -1,31 +1,34 @@
-import { Fluent } from "@moebius/fluent";
+
+import { Fluent } from '@moebius/fluent';
+
 
 void (async () => {
+
   const fluent = new Fluent();
 
   await fluent.addTranslation({
-    locales: "en",
+    locales: 'en',
     source: (`
 messages=
     `),
   });
 
   await fluent.addTranslation({
-    locales: "en-AU",
+    locales: 'en-AU',
     source: (`
 messages=
     `),
   });
 
   await fluent.addTranslation({
-    locales: "en-GB",
+    locales: 'en-GB',
     source: (`
 messages=
     `),
   });
 
   await fluent.addTranslation({
-    locales: "ru",
+    locales: 'ru',
     source: (`
 messages=
   .hello = Привет!
@@ -34,5 +37,6 @@ messages=
   });
 
   // Привет
-  console.debug(fluent.translate("en-AU", "messages.hello"));
+  console.debug(fluent.translate('en-AU', 'messages.hello'));
+
 })();

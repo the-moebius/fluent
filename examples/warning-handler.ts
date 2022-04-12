@@ -1,15 +1,20 @@
-import { Fluent } from "@moebius/fluent";
 
-import { Warning, WarningHandler } from "../src/warnings/warnings";
+import { Fluent } from '@moebius/fluent';
+
+import { Warning, WarningHandler } from '../src/warnings/warnings';
+
 
 void (async () => {
+
   class MyWarningHandler implements WarningHandler {
+
     public handleWarning(warning: Warning): void {
       console.warn(
         `Houston, we got a problem!`,
-        JSON.stringify(warning, null, 4),
+        JSON.stringify(warning, null, 4)
       );
     }
+
   }
 
   const fluent = new Fluent({
@@ -17,10 +22,11 @@ void (async () => {
   });
 
   await fluent.addTranslation({
-    locales: "en-GB",
-    source: "",
+    locales: 'en-GB',
+    source: '',
   });
 
   // {welcome}
-  console.debug(fluent.translate("en", "welcome"));
+  console.debug(fluent.translate('en', 'welcome'));
+
 })();

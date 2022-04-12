@@ -1,3 +1,4 @@
+
 # @moebius/fluent
 
 <!-- NPM Badge -->
@@ -11,6 +12,7 @@
 </a>
 
 Better [Fluent][fluent-js] integration for JavaScript.
+
 
 ## Features
 
@@ -33,7 +35,7 @@ Better [Fluent][fluent-js] integration for JavaScript.
 
 - **Written completely in TypeScript** from scratch
   in a very strict manner with 100% type coverage
-  (and no _any_'s), ensuring that the library code
+  (and no *any*'s), ensuring that the library code
   is correct (type safe) by itself and also
   **provides high quality typing declarations** to make
   sure that your code is also correct and type safe,
@@ -51,6 +53,7 @@ Better [Fluent][fluent-js] integration for JavaScript.
 - warning handling and logging are fully customizable
   to suit your individual needs.
 
+
 ## Install
 
 Install the library:
@@ -59,19 +62,20 @@ Install the library:
 npm install --save @moebius/fluent
 ```
 
+
 ## Usage
 
 ### Add translations
 
 ```typescript
-import { Fluent } from "@moebius/fluent";
+import { Fluent } from '@moebius/fluent';
 
 // Instantiate a Fluent class
 const fluent = new Fluent();
 
 // Add as many translations as you need fo your Fluent instance
 await fluent.addTranslation({
-  locales: "en",
+  locales: 'en',
   source: (`
 -brand-name = Super Project
 
@@ -90,7 +94,7 @@ welcome =
 });
 
 await fluent.addTranslation({
-  locales: "ru",
+  locales: 'ru',
   source: (`
 -brand-name = Супер Проект
 
@@ -109,11 +113,12 @@ welcome =
 });
 ```
 
+
 ### Use the Fluent instance directly
 
 ```typescript
-const output = fluent.translate("ru", "welcome", {
-  name: "Slava",
+const output = fluent.translate('ru', 'welcome', {
+  name: 'Slava',
   value: 100.12345,
   applesCount: 5,
 });
@@ -121,34 +126,37 @@ const output = fluent.translate("ru", "welcome", {
 console.log(output);
 ```
 
+
 ### Bind the locale
 
 You can use a helper-method to bind the specified locale
 for you:
 
 ```typescript
+
 // Use `withLocale()` method to create
 // translation function bound
 // to the specified locale:
-const translate = fluent.withLocale("ru");
+const translate = fluent.withLocale('ru');
 
 // You can also use a shorthand syntax:
-const t = fluent.withLocale("ru");
+const t = fluent.withLocale('ru');
 
-output = translate("welcome", {
-  name: "Slava",
+output = translate('welcome', {
+  name: 'Slava',
   value: 100.12345,
   applesCount: 5,
 });
 
-output = t("hello");
+output = t('hello');
 ```
+
 
 ### Load translations from file system
 
 ```typescript
 await fluent.addTranslation({
-  locales: "ru",
+  locales: 'ru',
   filePath: `${__dirname}/translation.ru.ftl`,
 });
 ```
@@ -160,25 +168,26 @@ they will overwrite previous messages:
 
 ```typescript
 await fluent.addTranslation({
-  locales: "ru",
+  locales: 'ru',
   filePath: [
     `${__dirname}/feature-1/translation.ru.ftl`,
-    `${__dirname}/feature-2/translation.ru.ftl`,
+    `${__dirname}/feature-2/translation.ru.ftl`
   ],
 });
 ```
+
 
 ### Specify bundle options
 
 ```typescript
 await fluent.addTranslation({
-  locales: "ru",
+  locales: 'ru',
   source: `…`,
   bundleOptions: {
     // This will disable appearance of "space"
     // characters around placeables
     useIsolating: false,
-  },
+  }
 });
 ```
 
@@ -209,15 +218,17 @@ a fallback logic. It works the following way:
    specified message (so you can fix it). Warning handling
    and logging [could be easily customized](#warning-handling).
 
+
 ## Warning handling
 
 By default, Fluent will log all the warnings using `console.warn`.
 However, this could easily be customized.
 
+
 ### Using custom logging function
 
 ```typescript
-import { Fluent, LoggingWarningHandler } from "@moebius/fluent";
+import { Fluent, LoggingWarningHandler } from '@moebius/fluent';
 
 // Instructing Fluent to use custom logging function
 const fluent = new Fluent({
@@ -225,22 +236,25 @@ const fluent = new Fluent({
     logFunction: (...args) => {
       // @todo: implement your custom logging function
     },
-  }),
+  })
 });
 ```
 
 See the [custom-logger](./examples/custom-logger.ts) example.
 
+
 ### Using custom warning handler
 
 ```typescript
-import { Fluent, Warning, WarningHandler } from "@moebius/fluent";
+import { Fluent, WarningHandler, Warning } from '@moebius/fluent';
 
 class MyWarningHandler implements WarningHandler {
+
   public handleWarning(warning: Warning): void {
     // @todo: implement your custom warning handling,
     //        the `warning` object contains useful exception details
   }
+
 }
 
 const fluent = new Fluent({
@@ -250,10 +264,12 @@ const fluent = new Fluent({
 
 See the [warning-handler](./examples/warning-handler.ts) example.
 
+
 ## Examples
 
 You can find various usage examples in the
 [examples](./examples) directory of the library.
+
 
 ### Running examples
 
@@ -293,6 +309,7 @@ In order to run any example on your machine, do the following:
    Output of the executed requests will be logged
    to the terminal.
 
+
 ## License (MIT)
 
 Copyright © 2021 Slava Fomin II
@@ -315,4 +332,5 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-[fluent-js]: https://github.com/projectfluent/fluent.js
+
+  [fluent-js]: https://github.com/projectfluent/fluent.js

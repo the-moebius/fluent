@@ -1,5 +1,7 @@
-import { FluentBundle } from "../deps.deno.ts";
-import { TranslationContext } from "../fluent.ts";
+
+import { FluentBundle } from '../deps.deno.ts';
+import { TranslationContext } from '../fluent.ts';
+
 
 export interface WarningHandler {
   handleWarning: (warning: Warning) => void;
@@ -22,20 +24,25 @@ export interface TranslateWarning extends BaseWarning {
   context?: TranslationContext;
 }
 
-export interface TranslateBundleMissingMessageWarning extends TranslateWarning {
-  type: "translate.bundle.missing-message";
+export interface TranslateBundleMissingMessageWarning
+  extends TranslateWarning
+{
+  type: 'translate.bundle.missing-message';
   messageId: string;
   bundle: FluentBundle;
 }
 
 export interface TranslateMessageMissingAttributeWarning
-  extends TranslateWarning {
-  type: "translate.message.missing-attribute";
+  extends TranslateWarning
+{
+  type: 'translate.message.missing-attribute';
   messageId: string;
   attributeName: string;
   bundle: FluentBundle;
 }
 
-export interface TranslateMissingTranslationWarning extends TranslateWarning {
-  type: "translate.missing-translation";
+export interface TranslateMissingTranslationWarning
+  extends TranslateWarning
+{
+  type: 'translate.missing-translation';
 }
