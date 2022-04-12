@@ -1,5 +1,6 @@
+// deno-lint-ignore-file no-explicit-any
 
-import { BaseWarning, Warning, WarningHandler } from './warnings';
+import { BaseWarning, Warning, WarningHandler } from './warnings.ts';
 
 
 export interface LoggingWarningHandlerOptions {

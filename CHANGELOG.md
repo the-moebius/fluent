@@ -1,3 +1,6 @@
+# v1.2.0 (minor release)
+
+[Deno](https://deno.land/) support
 
 # v1.1.0 (minor release)
 
