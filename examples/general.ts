@@ -1,15 +1,12 @@
-
-import { Fluent } from '@moebius/fluent';
-
+import { Fluent } from "@moebius/fluent";
 
 void (async () => {
-
   // Instantiate a Fluent class
   const fluent = new Fluent();
 
   // Add as many translations as you need fo your Fluent instance
   await fluent.addTranslation({
-    locales: 'en',
+    locales: "en",
     source: (`
 -brand-name = Super Project
 
@@ -30,12 +27,11 @@ welcome =
     },
   });
 
-  const output = fluent.translate('en', 'welcome', {
-    name: 'Slava',
+  const output = fluent.translate("en", "welcome", {
+    name: "Slava",
     value: 100.12345,
     applesCount: 5,
   });
 
   console.log(output);
-
 })();
