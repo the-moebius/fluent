@@ -1,6 +1,6 @@
 
-import { FluentBundle } from '@fluent/bundle';
-import { TranslationContext } from '../fluent';
+import { FluentBundle } from '../deps.deno.ts';
+import { TranslationContext } from '../fluent.ts';
 
 
 export interface WarningHandler {

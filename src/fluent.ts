@@ -1,11 +1,9 @@
 
-import { FluentBundle, FluentResource, FluentVariable } from '@fluent/bundle';
-import { Pattern } from '@fluent/bundle/esm/ast';
-import { negotiateLanguages } from '@fluent/langneg';
-
-import { readFile } from './read-file';
-import { LoggingWarningHandler } from './warnings/logging-warning-handler';
-import { WarningHandler } from './warnings/warnings';
+import type { FluentVariable, Pattern } from './deps.deno.ts';
+import { FluentBundle, FluentResource } from './deps.deno.ts';
+import { negotiateLanguages, readFile } from './deps.deno.ts';
+import { LoggingWarningHandler } from './warnings/logging-warning-handler.ts';
+import { WarningHandler } from './warnings/warnings.ts';
 
 
 export interface FluentOptions {
