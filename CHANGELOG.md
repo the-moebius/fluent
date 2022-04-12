@@ -1,3 +1,7 @@
+# v1.2.0 (minor release)
+
+[Deno](https://deno.land/) support
+
 # v1.1.0 (minor release)
 
 Introduced [custom logging & warning handling](./README.md#warning-handling).
