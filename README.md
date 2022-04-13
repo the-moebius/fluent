@@ -62,6 +62,10 @@ Install the library:
 npm install --save @moebius/fluent
 ```
 
+There is a
+[Deno](https://deno.land) port of this package. See the GitHub
+[repository](https://github.com/dcdunkan/deno_fluent) or the
+[deno module](https://deno.land/x/better_fluent)
 
 ## Usage
 
